@@ -1,0 +1,22 @@
+ASSIGNMENT REPORT - TEST DOUBLES
+
+Name: 
+Andrew ID:
+
+Focus your report on assignment goals
+
+1. Why were test doubles necessary in this assignment? 
+
+2. What were the advantages and disadvantages of the different kinds of test doubles
+you used? What differences did you observe in their behavior and their ability to reveal faults?
+
+3. List the faults found in the production or test code.
+
+// use a bullet list, be specific, referring to broken tests and associated methods
+
+
+4. Suggestions and Comments about Assignment (Optional)
+
+// use a bullet list
+
+/** This report should not exceed one page. **/
