@@ -1,3 +1,4 @@
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -6,9 +7,15 @@ import java.util.Set;
 public class SocialNetwork implements ISocialNetwork {
 	
 	private Account currentUser = null;
-	private IAccountDAO accountDAO = DAOFactory.getInstance().getAccountDAO();
-	
+	//private IAccountDAO accountDAO = DAOFactory.getInstance().getAccountDAO();
+	private IAccountDAO accountDAO = null;
+
 	public SocialNetwork() {
+		this.accountDAO = DAOFactory.getInstance().getAccountDAO();
+	}
+
+	public SocialNetwork(IAccountDAO stubbedDAO) {
+		this.accountDAO = stubbedDAO;
 	}
 
 	private class MyAccount extends Account {

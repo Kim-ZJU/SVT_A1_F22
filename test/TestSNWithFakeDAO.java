@@ -13,7 +13,8 @@ public class TestSNWithFakeDAO extends TestSNAbstractGeneric {
 	
 	@Override @Before
 	public void setUp() throws Exception {
-		sn = new SocialNetwork();
+		accountDAO = DAOFactory.getInstance().getAccountDAOFake();
+		sn = new SocialNetwork(accountDAO);
 		super.setUp();
 	}
 	
