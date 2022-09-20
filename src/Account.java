@@ -5,7 +5,7 @@ import java.util.Set;
 public class Account implements Cloneable {
 	
 	/* 
-	 * Base perstitable class for the social network: stores member information
+	 * Base persistable class for the social network: stores member information
 	 * 
 	 */
 	

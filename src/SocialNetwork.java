@@ -1,4 +1,6 @@
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -6,9 +8,15 @@ import java.util.Set;
 public class SocialNetwork implements ISocialNetwork {
 	
 	private Account currentUser = null;
-	private IAccountDAO accountDAO = DAOFactory.getInstance().getAccountDAO();
-	
+	//private IAccountDAO accountDAO = DAOFactory.getInstance().getAccountDAO();
+	private IAccountDAO accountDAO = null;
+
 	public SocialNetwork() {
+		this.accountDAO = DAOFactory.getInstance().getAccountDAO();
+	}
+
+	public SocialNetwork(IAccountDAO stubbedDAO) {
+		this.accountDAO = stubbedDAO;
 	}
 
 	private class MyAccount extends Account {
@@ -80,6 +88,7 @@ public class SocialNetwork implements ISocialNetwork {
 			accountDAO.update(friend);
 		}
 		accountDAO.update(currentUser);
+		accountDAO.delete(currentUser);
 		currentUser = null;
 	}
 	
@@ -169,7 +178,9 @@ public class SocialNetwork implements ISocialNetwork {
 			if (friend == null ) throw new UserNotFoundException(each);
 			for (String friendOfFriend: friend.getFriends()) {
 				if (seen.contains(friendOfFriend)) {
-					//if (!currentUser.getFriends().contains(friendOfFriend) && !currentUser.blockedMembers().contains(friendOfFriend))
+					if (!currentUser.getFriends().contains(friendOfFriend)
+							&& !currentUser.blockedMembers().contains(friendOfFriend)
+							&& !Objects.equals(currentUser.getUserName(), friendOfFriend))
 						recommendations.add(friendOfFriend);
 				} 
 				else { // should we do something special about currentUser? 
