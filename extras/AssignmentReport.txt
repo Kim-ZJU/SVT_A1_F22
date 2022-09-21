@@ -14,6 +14,9 @@ you used? What differences did you observe in their behavior and their ability t
 
 // use a bullet list, be specific, referring to broken tests and associated methods
 
+- test canLeaveSocialNetwork() failed because the leave() method in SN.java did not use accountDAO.delete() method
+- test recommendMembersReturnsSharedFriendsOfMyFriends() failed because the recommendFriends() method in SN.java did not exclude the loggedIn user itself and its friends
+
 
 4. Suggestions and Comments about Assignment (Optional)
 
