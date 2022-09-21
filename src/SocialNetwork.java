@@ -78,6 +78,7 @@ public class SocialNetwork implements ISocialNetwork {
 		if (toMember == null) throw new UserNotFoundException(userName);
 		toMember.requestFriendship(currentUser);
 		accountDAO.update(currentUser); 
+		accountDAO.update(toMember); 
 	}
 
 	public void leave() throws NoUserLoggedInException {
@@ -85,6 +86,16 @@ public class SocialNetwork implements ISocialNetwork {
 		for (String each : currentUser.getFriends()) {
 			Account friend = accountDAO.findByUserName(each);
 			friend.cancelFriendship(currentUser);
+			accountDAO.update(friend);
+		}
+		for (String each : currentUser.getIncomingRequests()) {
+			Account friend = accountDAO.findByUserName(each);
+			friend.getOutgoingRequests().remove(currentUser.getUserName());
+			accountDAO.update(friend);
+		}
+		for (String each : currentUser.getOutgoingRequests()) {
+			Account friend = accountDAO.findByUserName(each);
+			friend.getIncomingRequests().remove(currentUser.getUserName());
 			accountDAO.update(friend);
 		}
 		accountDAO.update(currentUser);
@@ -116,6 +127,7 @@ public class SocialNetwork implements ISocialNetwork {
 		if (member == null) throw new UserNotFoundException(userName);
 		member.friendshipRejected(currentUser);
 		accountDAO.update(member);
+		accountDAO.update(currentUser);
 	}
 
 	public void autoAcceptFriendships() throws NoUserLoggedInException {
@@ -136,6 +148,7 @@ public class SocialNetwork implements ISocialNetwork {
 		if (member == null) throw new UserNotFoundException(userName);
 		currentUser.block(member);
 		accountDAO.update(currentUser);
+		accountDAO.update(member);
 	}
 	
 	public void unblock(String userName) throws UserNotFoundException, NoUserLoggedInException {
