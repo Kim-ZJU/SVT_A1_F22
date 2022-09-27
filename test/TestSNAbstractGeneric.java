@@ -2,6 +2,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
@@ -65,15 +66,63 @@ public abstract class TestSNAbstractGeneric {
 	public void mustLoginBeforeUsingSocialNetwork()
 			throws NoUserLoggedInException, UserNotFoundException {
 		sn.hasMember("Jane");
+	}
+
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeListingMembers()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.listMembers();
+	}
+
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeSendingFriendshipTo()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.sendFriendshipTo("Jane");
+	}
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeAcceptingFriendshipFrom()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.acceptFriendshipFrom("Jane");
+	}
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeRejectingFriendshipFrom()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.rejectFriendshipFrom("Jane");
+	}
+
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeBlocking()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.block("Jane");
+	}
+
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeSendingFriendshipCancellationTo()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.sendFriendshipCancellationTo("Jane");
+	}
+
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeSettingAutoAcceptFriendships()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.autoAcceptFriendships();
+	}
+
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeCancelingAutoAcceptFriendships()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.cancelAutoAcceptFriendships();
+	}
+
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeLeaving()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.leave();
+	}
+
+	@Test(expected = NoUserLoggedInException.class)
+	public void mustLoginBeforeRecommendFriends()
+			throws NoUserLoggedInException, UserNotFoundException {
 		sn.recommendFriends();
 	}
 
@@ -143,6 +192,33 @@ public abstract class TestSNAbstractGeneric {
 		sn.sendFriendshipTo("Anonymous");
 	}
 
+	// @Test(expected = UserNotFoundException.class)
+	// public void canNotRecommendFriendsWhenNoUserFound()
+	// 	throws UserNotFoundException, NoUserLoggedInException {
+	// 	// TODO
+	// }
+
+	// @Test(expected = UserNotFoundException.class)
+	// public void canNotAcceptFriendshipFromWhenNoUserFound()
+	// 	throws UserNotFoundException, NoUserLoggedInException {
+	// 		// TODO
+
+	// }
+
+	// @Test(expected = UserNotFoundException.class)
+	// public void canNotRejectFriendshipFromWhenNoUserFound()
+	// 	throws UserNotFoundException, NoUserLoggedInException {
+	// 		// TODO
+
+	// }
+
+	// @Test(expected = UserNotFoundException.class)
+	// public void canNotBlockWhenNoUserFound()
+	// 	throws UserNotFoundException, NoUserLoggedInException {
+	// 		// TODO
+
+	// }
+
 	@Test(expected = UserExistsException.class)
 	public void canNotJoinSocialNetworkAgain() throws UserExistsException {
 		sn.join("Hakan");
@@ -200,8 +276,158 @@ public abstract class TestSNAbstractGeneric {
 		// might have to do additional checking if using a Mockito mock
 		sn.login(m3);
 		assertFalse(sn.hasMember(m2.getUserName()));
+		assertEquals(0, m2.getIncomingRequests().size());
+		assertEquals(0, m2.getOutgoingRequests().size());
 	}	
 	
+    @Test
+	public void rejectingAllFriendRequests() throws UserNotFoundException,
+			NoUserLoggedInException {
+		sn.login(m1);//John
+		sn.sendFriendshipTo("Serra");
+		sn.login(m2);//Hakan
+		sn.sendFriendshipTo("Serra");
+		sn.login(m3);//Serra
+		sn.rejectAllFriendships();
+		assertEquals(0, m3.getIncomingRequests().size());
+	}
+
+    @Test
+	public void acceptingAllFriendRequests() throws UserNotFoundException,
+			NoUserLoggedInException {
+		sn.login(m1);//John
+		sn.sendFriendshipTo("Serra");
+		sn.login(m2);//Hakan
+		sn.sendFriendshipTo("Serra");
+		sn.login(m3);//Serra
+		sn.acceptAllFriendships();
+		assertEquals(0, m3.getIncomingRequests().size());
+		assertEquals(2, m3.getFriends().size());
+		assertTrue(m3.getFriends().contains("John"));
+		assertTrue(m3.getFriends().contains("Hakan"));
+	}
+
+    @Test
+	public void sendFriendshipCancellationTo() throws UserNotFoundException,
+			NoUserLoggedInException {
+		sn.login(m1);//John
+		sn.sendFriendshipTo("Serra");//m3
+		sn.sendFriendshipCancellationTo("Serra");
+		assertEquals(0, m3.getIncomingRequests().size());
+		assertEquals(0, m1.getOutgoingRequests().size());
+	}
+	
+	@Test
+	public void unblock() throws UserNotFoundException,
+			NoUserLoggedInException {
+		sn.login(m1);
+		sn.block("Hakan");//m2
+		sn.unblock("Hakan");
+		assertTrue(sn.listMembers().contains("Hakan"));
+		sn.sendFriendshipTo("Hakan");
+		assertEquals(1, m1.getOutgoingRequests().size());
+		assertEquals(1, m2.getIncomingRequests().size());
+	}
+
+	@Test
+	public void autoAcceptFriendships() throws UserNotFoundException,
+			NoUserLoggedInException {
+		sn.login(m3);
+		sn.autoAcceptFriendships();
+		sn.login(m1);//John
+		sn.sendFriendshipTo("Serra");//m3
+		sn.login(m2);//Hakan
+		sn.sendFriendshipTo("Serra");//m3
+		assertEquals(2, m3.getFriends().size());
+	}
+
+	@Test
+	public void cancelAutoAcceptFriendships() throws UserNotFoundException,
+			NoUserLoggedInException {
+		sn.login(m3);
+		sn.autoAcceptFriendships();
+		sn.login(m1);//John
+		sn.sendFriendshipTo("Serra");//m3
+		sn.login(m3);
+		sn.cancelAutoAcceptFriendships();
+		sn.login(m2);//Hakan
+		sn.sendFriendshipTo("Serra");//m3
+		assertEquals(1, m3.getFriends().size());
+		assertTrue(m3.getFriends().contains("John"));
+	}
+
+	@Test(expected = NoUserLoggedInException.class)
+	public void logout() throws UserNotFoundException,
+			NoUserLoggedInException {
+		sn.login(m3);
+		sn.logout();
+		sn.sendFriendshipTo("Hakan");
+	}
+
+	@Test(expected = UserNotFoundException.class)
+	public void loginCanHandleNullInput() throws UserNotFoundException,
+			NoUserLoggedInException {
+		assertNull(sn.login(null));	
+	}
+
+	@Test(expected = UserNotFoundException.class)
+	public void loginCanHandleNonExistUsername() throws UserNotFoundException,
+			NoUserLoggedInException {
+		Account anonymous = new Account();
+		anonymous.setUserName("Anonymous");
+		assertNull(sn.login(anonymous));
+	}
+
+	@Test
+	public void recommendFriendsAlreadyFriends() throws UserNotFoundException,
+			NoUserLoggedInException {
+		sn.login(m1);
+		sn.sendFriendshipTo(m2.getUserName());
+		sn.sendFriendshipTo(m3.getUserName());
+		sn.sendFriendshipTo(m4.getUserName());
+		sn.login(m2);
+		sn.acceptFriendshipFrom(m1.getUserName());
+		sn.sendFriendshipTo(m4.getUserName());
+		sn.login(m3);
+		sn.acceptFriendshipFrom(m1.getUserName());
+		sn.sendFriendshipTo(m4.getUserName());
+		sn.login(m4);
+		sn.acceptFriendshipFrom(m1.getUserName());
+		sn.acceptFriendshipFrom(m2.getUserName());
+		sn.acceptFriendshipFrom(m3.getUserName());
+		sn.login(m1);
+		Set<String> recommendations = sn.recommendFriends();
+		assertFalse(recommendations.contains(m4.getUserName()));
+		assertFalse(recommendations.contains(m3.getUserName()));
+		assertFalse(recommendations.contains(m1.getUserName()));
+		assertEquals(0, recommendations.size());
+	}
+
+	@Test
+	public void recommendFriendsBlockedAccount() throws UserNotFoundException,
+			NoUserLoggedInException {
+		sn.login(m1);
+		sn.sendFriendshipTo(m2.getUserName());
+		sn.sendFriendshipTo(m3.getUserName());
+		sn.block(m4.getUserName());
+		sn.login(m2);
+		sn.acceptFriendshipFrom(m1.getUserName());
+		sn.sendFriendshipTo(m4.getUserName());
+		sn.login(m3);
+		sn.acceptFriendshipFrom(m1.getUserName());
+		sn.sendFriendshipTo(m4.getUserName());
+		sn.login(m4);
+		sn.acceptFriendshipFrom(m2.getUserName());
+		sn.acceptFriendshipFrom(m3.getUserName());
+		sn.login(m1);
+		Set<String> recommendations = sn.recommendFriends();
+		assertFalse(recommendations.contains(m4.getUserName()));
+		assertFalse(recommendations.contains(m3.getUserName()));
+		assertFalse(recommendations.contains(m1.getUserName()));
+		assertEquals(0, recommendations.size());
+	}
+
+
 	
 	/*
 	 * The rest are auxiliary tests. 
