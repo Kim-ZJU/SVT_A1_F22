@@ -312,6 +312,8 @@ public abstract class TestSNAbstractGeneric {
 			NoUserLoggedInException {
 		sn.login(m1);//John
 		sn.sendFriendshipTo("Serra");//m3
+		sn.login(m3);//Serra
+		sn.acceptAllFriendships();
 		sn.sendFriendshipCancellationTo("Serra");
 		assertEquals(0, m3.getIncomingRequests().size());
 		assertEquals(0, m1.getOutgoingRequests().size());

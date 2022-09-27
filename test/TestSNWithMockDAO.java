@@ -15,10 +15,10 @@ import static org.mockito.Mockito.*;
 public class TestSNWithMockDAO extends TestSNAbstractGeneric {
 
 	protected DAOFactory daoFactory;
-	protected IAccountDAO accountDAO; 
-	protected SocialNetwork sn;
-	protected Account m1, m2, m3, m4, m5;
-	protected Set<Account> all = new HashSet<Account>();
+	// protected IAccountDAO accountDAO; 
+	// protected SocialNetwork sn;
+	// protected Account m1, m2, m3, m4, m5;
+	// protected Set<Account> all = new HashSet<Account>();
 
 	@Override @Before
 	public void setUp() throws Exception {
@@ -51,134 +51,134 @@ public class TestSNWithMockDAO extends TestSNAbstractGeneric {
 	 * Generic tests are automatically inherited from abstract superclass - they should continue to work here! 
 	 */
 
-	@Test
-	public void canLoginAndFindYourself() throws NoUserLoggedInException,
-			UserNotFoundException {
-		sn.login(m1);
-		assertTrue(sn.hasMember(m1.getUserName()));
-	}
+	// @Test
+	// public void canLoginAndFindYourself() throws NoUserLoggedInException,
+	// 		UserNotFoundException {
+	// 	sn.login(m1);
+	// 	assertTrue(sn.hasMember(m1.getUserName()));
+	// }
 
-	@Test
-	public void canLoginAndFindOthers() throws UserNotFoundException,
-			NoUserLoggedInException {
-		sn.login(m1);
-		assertTrue(sn.hasMember(m2.getUserName()));
-		assertTrue(sn.hasMember(m3.getUserName()));
-	}
+	// @Test
+	// public void canLoginAndFindOthers() throws UserNotFoundException,
+	// 		NoUserLoggedInException {
+	// 	sn.login(m1);
+	// 	assertTrue(sn.hasMember(m2.getUserName()));
+	// 	assertTrue(sn.hasMember(m3.getUserName()));
+	// }
 
-	@Test(expected = NoUserLoggedInException.class)
-	public void logout() throws UserNotFoundException,
-			NoUserLoggedInException {
-		sn.login(m3);
-		sn.logout();
-		sn.sendFriendshipTo("Hakan");
-	}
+	// @Test(expected = NoUserLoggedInException.class)
+	// public void logout() throws UserNotFoundException,
+	// 		NoUserLoggedInException {
+	// 	sn.login(m3);
+	// 	sn.logout();
+	// 	sn.sendFriendshipTo("Hakan");
+	// }
 
-	@Test
-	public void canListMembers() throws NoUserLoggedInException,
-			UserNotFoundException {
-		sn.login(m1);
-		Set<String> members = sn.listMembers();
-		assertTrue(members.contains(m2.getUserName()));
-		assertTrue(members.contains(m3.getUserName()));
-	}
+	// @Test
+	// public void canListMembers() throws NoUserLoggedInException,
+	// 		UserNotFoundException {
+	// 	sn.login(m1);
+	// 	Set<String> members = sn.listMembers();
+	// 	assertTrue(members.contains(m2.getUserName()));
+	// 	assertTrue(members.contains(m3.getUserName()));
+	// }
 
 
-	@Test
-	public void acceptingAllFriendRequests() throws UserNotFoundException,
-			NoUserLoggedInException {
-		sn.login(m1);//John
-		sn.sendFriendshipTo("Serra");
-		sn.login(m2);//Hakan
-		sn.sendFriendshipTo("Serra");
-		sn.login(m3);//Serra
-		sn.acceptAllFriendships();
-		assertEquals(0, m3.getIncomingRequests().size());
-		assertEquals(2, m3.getFriends().size());
-		assertTrue(m3.getFriends().contains("John"));
-		assertTrue(m3.getFriends().contains("Hakan"));
-	}
+	// @Test
+	// public void acceptingAllFriendRequests() throws UserNotFoundException,
+	// 		NoUserLoggedInException {
+	// 	sn.login(m1);//John
+	// 	sn.sendFriendshipTo("Serra");
+	// 	sn.login(m2);//Hakan
+	// 	sn.sendFriendshipTo("Serra");
+	// 	sn.login(m3);//Serra
+	// 	sn.acceptAllFriendships();
+	// 	assertEquals(0, m3.getIncomingRequests().size());
+	// 	assertEquals(2, m3.getFriends().size());
+	// 	assertTrue(m3.getFriends().contains("John"));
+	// 	assertTrue(m3.getFriends().contains("Hakan"));
+	// }
 
-	@Test
-	public void sendFriendshipCancellationTo() throws UserNotFoundException,
-			NoUserLoggedInException {
-		sn.login(m1);//John
-		sn.sendFriendshipTo("Serra");//m3
-		sn.login(m3);//Serra
-		sn.acceptAllFriendships();
-		sn.login(m1);//John
-		sn.sendFriendshipCancellationTo("Serra");
-		assertEquals(0, m3.getIncomingRequests().size());
-		assertEquals(0, m1.getOutgoingRequests().size());
-	}
+	// @Test
+	// public void sendFriendshipCancellationTo() throws UserNotFoundException,
+	// 		NoUserLoggedInException {
+	// 	sn.login(m1);//John
+	// 	sn.sendFriendshipTo("Serra");//m3
+	// 	sn.login(m3);//Serra
+	// 	sn.acceptAllFriendships();
+	// 	sn.login(m1);//John
+	// 	sn.sendFriendshipCancellationTo("Serra");
+	// 	assertEquals(0, m3.getIncomingRequests().size());
+	// 	assertEquals(0, m1.getOutgoingRequests().size());
+	// }
 	
-	@Test
-	public void sendingFriendRequestCreatesPendingRequestAndResponse()
-			throws UserNotFoundException, NoUserLoggedInException {
-		assertTrue(m3.getIncomingRequests().isEmpty());
-		sn.login(m2);
-		sn.sendFriendshipTo(m3.getUserName());
-		m2 = sn.login(m2);
-		m3 = sn.login(m3);
-		assertTrue(m3.getIncomingRequests().contains(m2.getUserName()));
-		assertTrue(m2.getOutgoingRequests().contains(m3.getUserName()));
-	}
+	// @Test
+	// public void sendingFriendRequestCreatesPendingRequestAndResponse()
+	// 		throws UserNotFoundException, NoUserLoggedInException {
+	// 	assertTrue(m3.getIncomingRequests().isEmpty());
+	// 	sn.login(m2);
+	// 	sn.sendFriendshipTo(m3.getUserName());
+	// 	m2 = sn.login(m2);
+	// 	m3 = sn.login(m3);
+	// 	assertTrue(m3.getIncomingRequests().contains(m2.getUserName()));
+	// 	assertTrue(m2.getOutgoingRequests().contains(m3.getUserName()));
+	// }
 
-	@Test
-	public void acceptingFriendRequestCreatesFriendship()
-			throws UserNotFoundException, NoUserLoggedInException {
-		sn.login(m2);
-		sn.sendFriendshipTo(m3.getUserName());
-		m3 = sn.login(m3);
-		sn.acceptFriendshipFrom(m2.getUserName());
-		m2 = sn.login(m2);
-		assertTrue(m3.getFriends().contains(m2.getUserName()));
-		assertTrue(m2.getFriends().contains(m3.getUserName()));
-	}
+	// @Test
+	// public void acceptingFriendRequestCreatesFriendship()
+	// 		throws UserNotFoundException, NoUserLoggedInException {
+	// 	sn.login(m2);
+	// 	sn.sendFriendshipTo(m3.getUserName());
+	// 	m3 = sn.login(m3);
+	// 	sn.acceptFriendshipFrom(m2.getUserName());
+	// 	m2 = sn.login(m2);
+	// 	assertTrue(m3.getFriends().contains(m2.getUserName()));
+	// 	assertTrue(m2.getFriends().contains(m3.getUserName()));
+	// }
 
-	@Test
-	public void rejectingFriendRequestClearsPendingRequestAndResponse()
-			throws UserNotFoundException, NoUserLoggedInException {
-		sn.login(m2);
-		sn.sendFriendshipTo(m3.getUserName());
-		sn.login(m3);
-		sn.rejectFriendshipFrom(m2.getUserName());
-		assertFalse(m3.getIncomingRequests().contains(m2.getUserName()));
-		assertFalse(m2.getOutgoingRequests().contains(m3.getUserName()));
-	}
+	// @Test
+	// public void rejectingFriendRequestClearsPendingRequestAndResponse()
+	// 		throws UserNotFoundException, NoUserLoggedInException {
+	// 	sn.login(m2);
+	// 	sn.sendFriendshipTo(m3.getUserName());
+	// 	sn.login(m3);
+	// 	sn.rejectFriendshipFrom(m2.getUserName());
+	// 	assertFalse(m3.getIncomingRequests().contains(m2.getUserName()));
+	// 	assertFalse(m2.getOutgoingRequests().contains(m3.getUserName()));
+	// }
 
-	@Test(expected = UserNotFoundException.class)
-	public void canNotSendAFriendRequestToNonExistingMember()
-			throws UserNotFoundException, NoUserLoggedInException {
-		sn.login(m2);
-		sn.sendFriendshipTo("Anonymous");
-	}
+	// @Test(expected = UserNotFoundException.class)
+	// public void canNotSendAFriendRequestToNonExistingMember()
+	// 		throws UserNotFoundException, NoUserLoggedInException {
+	// 	sn.login(m2);
+	// 	sn.sendFriendshipTo("Anonymous");
+	// }
 
-	@Test(expected = UserExistsException.class)
-	public void canNotJoinSocialNetworkAgain() throws UserExistsException {
-		sn.join("John");
-	}
+	// @Test(expected = UserExistsException.class)
+	// public void canNotJoinSocialNetworkAgain() throws UserExistsException {
+	// 	sn.join("John");
+	// }
 
-	@Test
-	public void blockingAMemberMakesUserInvisibleToHerInHasMember()
-			throws UserExistsException, UserNotFoundException,
-			NoUserLoggedInException {
-		sn.login(m2);
-		sn.block(m3.getUserName());
-		sn.login(m3);
-		assertFalse(sn.hasMember(m2.getUserName()));
-	}
+	// @Test
+	// public void blockingAMemberMakesUserInvisibleToHerInHasMember()
+	// 		throws UserExistsException, UserNotFoundException,
+	// 		NoUserLoggedInException {
+	// 	sn.login(m2);
+	// 	sn.block(m3.getUserName());
+	// 	sn.login(m3);
+	// 	assertFalse(sn.hasMember(m2.getUserName()));
+	// }
 
-	@Test
-	public void blockingAMemberMakesUserInvisibleToHerInListMembers()
-			throws UserExistsException, UserNotFoundException,
-			NoUserLoggedInException {
-		sn.login(m2);
-		sn.block(m3.getUserName());
-		sn.login(m3);
-		Set<String> allMembers = sn.listMembers();
-		assertFalse(allMembers.contains(m2.getUserName()));
-	}
+	// @Test
+	// public void blockingAMemberMakesUserInvisibleToHerInListMembers()
+	// 		throws UserExistsException, UserNotFoundException,
+	// 		NoUserLoggedInException {
+	// 	sn.login(m2);
+	// 	sn.block(m3.getUserName());
+	// 	sn.login(m3);
+	// 	Set<String> allMembers = sn.listMembers();
+	// 	assertFalse(allMembers.contains(m2.getUserName()));
+	// }
 
 	@Test
 	public void recommendMembersReturnsSharedFriendsOfMyFriends()
