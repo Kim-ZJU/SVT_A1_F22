@@ -153,19 +153,20 @@ public abstract class TestSNAbstractGeneric {
 	@Test
 	public void sendingFriendRequestCreatesPendingRequestAndResponse()
 			throws UserNotFoundException, NoUserLoggedInException {
+		m3 = sn.login(m3);
 		assertTrue(m3.getIncomingRequests().isEmpty());
-		sn.login(m2);
-		sn.sendFriendshipTo(m3.getUserName());
 		m2 = sn.login(m2);
+		sn.sendFriendshipTo(m3.getUserName());
+		assertTrue(m2.getOutgoingRequests().contains(m3.getUserName()));
 		m3 = sn.login(m3);
 		assertTrue(m3.getIncomingRequests().contains(m2.getUserName()));
-		assertTrue(m2.getOutgoingRequests().contains(m3.getUserName()));
+
 	}
 
 	@Test
 	public void acceptingFriendRequestCreatesFriendship()
 			throws UserNotFoundException, NoUserLoggedInException {
-		sn.login(m2);
+		m2 = sn.login(m2);
 		sn.sendFriendshipTo(m3.getUserName());
 		m3 = sn.login(m3);
 		sn.acceptFriendshipFrom(m2.getUserName());
@@ -295,11 +296,11 @@ public abstract class TestSNAbstractGeneric {
     @Test
 	public void acceptingAllFriendRequests() throws UserNotFoundException,
 			NoUserLoggedInException {
-		sn.login(m1);//John
+		m1 = sn.login(m1);//John
 		sn.sendFriendshipTo("Serra");
-		sn.login(m2);//Hakan
+		m2 = sn.login(m2);//Hakan
 		sn.sendFriendshipTo("Serra");
-		sn.login(m3);//Serra
+		m3 = sn.login(m3);//Serra
 		sn.acceptAllFriendships();
 		assertEquals(0, m3.getIncomingRequests().size());
 		assertEquals(2, m3.getFriends().size());
@@ -322,11 +323,12 @@ public abstract class TestSNAbstractGeneric {
 	@Test
 	public void unblock() throws UserNotFoundException,
 			NoUserLoggedInException {
-		sn.login(m1);
+		m1 = sn.login(m1);
 		sn.block("Hakan");//m2
 		sn.unblock("Hakan");
 		assertTrue(sn.listMembers().contains("Hakan"));
 		sn.sendFriendshipTo("Hakan");
+		m2 = sn.login(m2);
 		assertEquals(1, m1.getOutgoingRequests().size());
 		assertEquals(1, m2.getIncomingRequests().size());
 	}
@@ -340,6 +342,7 @@ public abstract class TestSNAbstractGeneric {
 		sn.sendFriendshipTo("Serra");//m3
 		sn.login(m2);//Hakan
 		sn.sendFriendshipTo("Serra");//m3
+		m3 = sn.login(m3);
 		assertEquals(2, m3.getFriends().size());
 	}
 
@@ -354,6 +357,7 @@ public abstract class TestSNAbstractGeneric {
 		sn.cancelAutoAcceptFriendships();
 		sn.login(m2);//Hakan
 		sn.sendFriendshipTo("Serra");//m3
+		m3 = sn.login(m3);
 		assertEquals(1, m3.getFriends().size());
 		assertTrue(m3.getFriends().contains("John"));
 	}

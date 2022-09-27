@@ -175,11 +175,12 @@ public class SocialNetwork implements ISocialNetwork {
 		// must clone incomingRequests to avoid concurrentModificationException
 		Collection<String> incomingRequests = new HashSet<String>();
 		for (String each : currentUser.getIncomingRequests()) {
-			incomingRequests.add(new String(each));
+			incomingRequests.add(each);
 		}
 		for (String each : incomingRequests) {
 			accountDAO.findByUserName(each).friendshipAccepted(currentUser);
 		}
+		accountDAO.update(currentUser);
 	}
 
 	public Set<String> recommendFriends() throws NoUserLoggedInException, UserNotFoundException {
