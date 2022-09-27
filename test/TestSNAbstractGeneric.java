@@ -16,13 +16,12 @@ import org.junit.Test;
 public abstract class TestSNAbstractGeneric {
 	
 	protected IAccountDAO accountDAO; 
-	protected SocialNetwork sn;
+	protected SocialNetwork sn = new SocialNetwork();
 	protected Account m1, m2, m3, m4, m5;
 	protected Set<Account> all = new HashSet<Account>();
 
 	@Before
 	public void setUp() throws Exception {
-		sn = new SocialNetwork();
 		m1 = sn.join("John");
 		m2 = sn.join("Hakan");
 		m3 = sn.join("Serra");
