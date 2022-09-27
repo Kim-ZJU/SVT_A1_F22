@@ -52,13 +52,15 @@ public class AccountDAOFake implements IAccountDAO {
 
 	public void update(Account member) {
 		// implement this method
+        Account toRemove = null;
 		for (Account each : accounts) {
 			if (each.getUserName().equals(member.getUserName())) {
-				accounts.remove(each);
-				accounts.add(member.clone());
+				toRemove = each;
 				break;
 			}
 		}
+		accounts.remove(toRemove);
+		accounts.add(member.clone());
 	}
 
 }
