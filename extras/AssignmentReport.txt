@@ -1,14 +1,26 @@
 ASSIGNMENT REPORT - TEST DOUBLES
 
-Name: 
-Andrew ID:
+Name: Hejin Gu, Qilan Zhang
+Andrew ID: hejing, qilanz
 
 Focus your report on assignment goals
 
 1. Why were test doubles necessary in this assignment? 
 
+Since neither DAO and the data store exists, but we still want to test the functionality of the SocialNetwork API,
+test doubles are necessary and helpful in tackling our tasks. Both AccountDAOFake and mock(IAccountDAO.class) help
+to break the coupling between the real implementation class "AccountDAO" and the class "SocialNetwork", enabling
+us to test the functionality without affecting the real data store.
+
 2. What were the advantages and disadvantages of the different kinds of test doubles
 you used? What differences did you observe in their behavior and their ability to reveal faults?
+
+- The AccountDAOFake used an in-memory database that stands in for real database, which was constructed without help
+from mocking frameworks. So, in real test workspace, we don't need to add mock into libraries. However, the DAOFake
+could be difficult to create and burdensome to maintain if the real DAO had more new functionalities.
+
+-Using spy did not need us to implement a (fake) DAO, which saved us a lot of time. However, a spy could only verify 
+how many times an invocation being called, which was very limited.
 
 3. List the faults found in the production or test code.
 
@@ -16,7 +28,11 @@ you used? What differences did you observe in their behavior and their ability t
 
 - test canLeaveSocialNetwork() failed because the leave() method in SN.java did not use accountDAO.delete() method
 - test recommendMembersReturnsSharedFriendsOfMyFriends() failed because the recommendFriends() method in SN.java did not exclude the loggedIn user itself and its friends
-
+- tests willAttemptToPersistSendingAFriendRequest(), willAttemptToPersistAcceptanceOfFriendRequest(), 
+  and willAttemptToPersistRejectionOfFriendRequest() failed because sendFriendshipTo, acceptFriendshipFrom,
+  and rejectFriendshipFrom need to update both the sending and receiving users
+- test sendFriendshipCancellationTo() failed because cancelFriendship need to update 
+  the OutgoingRequests and IncomingRequests of the user
 
 4. Suggestions and Comments about Assignment (Optional)
 
